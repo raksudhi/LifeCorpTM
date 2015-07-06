@@ -14,16 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class DispatchUserID
+ * Servlet implementation class ProductsforExisting
  */
-@WebServlet("/DispatchUserID")
-public class DispatchUserID extends HttpServlet {
+@WebServlet("/ProductsforExisting")
+public class ProductsforExisting extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DispatchUserID() {
+    public ProductsforExisting() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -41,76 +41,28 @@ public class DispatchUserID extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-	//	String tableinfo = "";
-		String quantity = request.getParameter("quantity");
 		
+		String userEmailID = request.getParameter("emailid");
+		String userPassword = request.getParameter("password");
 		HttpSession session = request.getSession();
-		String prodID = (String) session.getAttribute("ProductID");
-		
-		List<User> Customers = getCustomerInfo();
-		List<LifeCorpProduct>productinfo = getProductInfo(prodID);
-		
-		try
-		{			
-	
-			request.setAttribute("UserInfo", Customers);
-			request.setAttribute("ProductInfo", productinfo);
-			session.setAttribute("userid", Customers.get(0).getUserid());
-			session.setAttribute("Quantity", quantity);
-		//	String userID = (String) session.getAttribute("userid");
-			//System.out.println(Customers.get(0).getUserid());
-			
-			
-		}
-		catch(Exception e)
-		{
-			request.setAttribute("message", "<div class='alert alert-danger' role='alert'>Error! Danger Will Robinson Danger! " + e + "</div>");
-		}
-		
-		getServletContext()
-		.getRequestDispatcher("/CreateOrders")
-		.forward(request, response);
-		
+       List<LifeCorpProduct> products = getProductInfo();
+       List<User> users = getCustomerInfo(userEmailID, userPassword);
+       System.out.println(userEmailID);
+       request.setAttribute("ProductList", products);
+     //  session.setAttribute("ProductID", products.get(0).getProductId());
+       session.setAttribute("userid", users.get(0).getUserid());
+     //  request.setAttribute("customerList", custs);
+       getServletContext().getRequestDispatcher("/displayProductsforExisting.jsp").forward(request, response);
 	}
+
 	
-	
-	protected static List<User> getCustomerInfo()
+	protected static List<LifeCorpProduct> getProductInfo()
 	{
 		
 		EntityManager em = mytools.DBUtil.getEmFactory().createEntityManager();
-		String qString = "SELECT c FROM User c";
-		TypedQuery<User> q = em.createQuery(qString, User.class);
-		
-		List<User> i = null;
-		try
-		{
-		
-			i = q.getResultList();
-			if(i == null || i.isEmpty())
-			{
-				i = null;
-			}
-		}
-		catch(NoResultException e)
-		{
-			System.out.println(e);
-		}
-		
-		finally 
-		{
-			em.close();
-		}
-		
-		return i;
-	}
-	
-	protected static List<LifeCorpProduct> getProductInfo(String prodID)
-	{
-		
-		EntityManager em = mytools.DBUtil.getEmFactory().createEntityManager();
-		String qString = "SELECT p FROM  LifeCorpProduct p where p.productId = :prodID ";
+		String qString = "SELECT p FROM  LifeCorpProduct p";
 		TypedQuery<LifeCorpProduct> q = em.createQuery(qString, LifeCorpProduct.class);
-		q.setParameter("prodID", Long.parseLong(prodID));
+		//q.setParameter("prodID", Long.parseLong(prodID));
 		List<LifeCorpProduct> i = null;
 		try
 		{
@@ -133,5 +85,36 @@ public class DispatchUserID extends HttpServlet {
 		
 		return i;
 	}
-
+	
+	
+	protected static List<User> getCustomerInfo(String userEmailID, String userPassword)
+	{
+		System.out.println("HelloWorld");
+		EntityManager em = mytools.DBUtil.getEmFactory().createEntityManager();
+		String qString = "SELECT c FROM User c where c.emailid = :userEmailID and c.password = :userPassword";
+		TypedQuery<User> q = em.createQuery(qString, User.class);
+		q.setParameter("userEmailID", userEmailID);
+		q.setParameter("userPassword", userPassword);
+		List<User> i = null;
+		try
+		{
+		
+			i = q.getResultList();
+			if(i == null || i.isEmpty())
+			{
+				i = null;
+			}
+		}
+		catch(NoResultException e)
+		{
+			System.out.println(e);
+		}
+		
+		finally 
+		{
+			em.close();
+		}
+		
+		return i;
+	}
 }

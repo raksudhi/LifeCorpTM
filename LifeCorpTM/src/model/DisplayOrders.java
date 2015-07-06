@@ -1,6 +1,7 @@
 package model;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,16 +15,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class DispatchUserID
+ * Servlet implementation class DisplayOrders
  */
-@WebServlet("/DispatchUserID")
-public class DispatchUserID extends HttpServlet {
+@WebServlet("/DisplayOrders")
+public class DisplayOrders extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DispatchUserID() {
+    public DisplayOrders() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -41,26 +42,33 @@ public class DispatchUserID extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-	//	String tableinfo = "";
-		String quantity = request.getParameter("quantity");
 		
 		HttpSession session = request.getSession();
-		String prodID = (String) session.getAttribute("ProductID");
+		String prodID =  (String) session.getAttribute("ProductID");
+		Long userID = (Long) session.getAttribute("userid");
+		Long orderID = (Long) session.getAttribute("OrderID");
 		
-		List<User> Customers = getCustomerInfo();
-		List<LifeCorpProduct>productinfo = getProductInfo(prodID);
+		String tableInfo = "";
+		
+		List<User> Customers = getCustomerInfo(userID);
+		List<LifeCorpProduct> products = getProductInfo(prodID);
+		List<LifeCorpOrder> orders = getOrderInfo(orderID);
 		
 		try
-		{			
-	
-			request.setAttribute("UserInfo", Customers);
-			request.setAttribute("ProductInfo", productinfo);
-			session.setAttribute("userid", Customers.get(0).getUserid());
-			session.setAttribute("Quantity", quantity);
-		//	String userID = (String) session.getAttribute("userid");
-			//System.out.println(Customers.get(0).getUserid());
+		{
+			Long Total = (products.get(0).getListPrice().longValue()) * (orders.get(0).getQuantity().longValue());
 			
+			System.out.println(Total);
+			tableInfo += "<tr><th>Customer Name</th><th>Product Name</th><th>List Price</th><th>Quantity</th><th>Order ID</th><th>Total</th></tr>";
 			
+			tableInfo += "<tr><td>" + Customers.get(0).getFirstname() + " " + Customers.get(0).getLastname() + "</th><th>"
+					+ products.get(0).getProduct() + "</th><th>"
+					+ products.get(0).getListPrice() + "</th><th>"
+					+ orders.get(0).getQuantity() + "</th><th>" 
+					+ orders.get(0).getOrderId() + "</th><th>" 
+					+ Total + "</td></tr>";
+			
+			request.setAttribute("tableInfo", tableInfo);
 		}
 		catch(Exception e)
 		{
@@ -68,19 +76,18 @@ public class DispatchUserID extends HttpServlet {
 		}
 		
 		getServletContext()
-		.getRequestDispatcher("/CreateOrders")
+		.getRequestDispatcher("/displayOrders.jsp")
 		.forward(request, response);
 		
 	}
 	
-	
-	protected static List<User> getCustomerInfo()
+	protected static List<User> getCustomerInfo(Long userID)
 	{
 		
 		EntityManager em = mytools.DBUtil.getEmFactory().createEntityManager();
-		String qString = "SELECT c FROM User c";
+		String qString = "SELECT c FROM User c where c.userid = :userID";
 		TypedQuery<User> q = em.createQuery(qString, User.class);
-		
+		q.setParameter("userID", userID);
 		List<User> i = null;
 		try
 		{
@@ -112,6 +119,37 @@ public class DispatchUserID extends HttpServlet {
 		TypedQuery<LifeCorpProduct> q = em.createQuery(qString, LifeCorpProduct.class);
 		q.setParameter("prodID", Long.parseLong(prodID));
 		List<LifeCorpProduct> i = null;
+		try
+		{
+		
+			i = q.getResultList();
+			if(i == null || i.isEmpty())
+			{
+				i = null;
+			}
+		}
+		catch(NoResultException e)
+		{
+			System.out.println(e);
+		}
+		
+		finally 
+		{
+			em.close();
+		}
+		
+		return i;
+	}
+	
+	
+	protected static List<LifeCorpOrder> getOrderInfo(Long orderID)
+	{
+		
+		EntityManager em = mytools.DBUtil.getEmFactory().createEntityManager();
+		String qString = "SELECT o FROM  LifeCorpOrder o where o.orderId = :orderID ";
+		TypedQuery<LifeCorpOrder> q = em.createQuery(qString, LifeCorpOrder.class);
+		q.setParameter("orderID", orderID);
+		List<LifeCorpOrder> i = null;
 		try
 		{
 		

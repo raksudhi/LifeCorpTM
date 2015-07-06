@@ -2,6 +2,7 @@ package model;
 
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,16 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Orders
+ * Servlet implementation class ExistinguserValidation
  */
-@WebServlet("/Orders")
-public class Orders extends HttpServlet {
+@WebServlet("/ExistinguserValidation")
+public class ExistinguserValidation extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Orders() {
+    public ExistinguserValidation() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -37,13 +38,13 @@ public class Orders extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String productID = request.getParameter("prodID");
+		EntityManager em = mytools.DBUtil.getEmFactory().createEntityManager();
+		
 		HttpSession session = request.getSession();
-		String prodID = (String) session.getAttribute("ProductID");
-		String custID = (String) session.getAttribute("userid");
+		session.setAttribute("ProductID", productID);
 		
-		String quantity = request.getParameter("quantity");
-		
-		
+		getServletContext().getRequestDispatcher("/getQuantity.jsp").forward(request, response);
 	}
 
 }

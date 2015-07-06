@@ -22,19 +22,20 @@
 	<script>
 	function login() 
 	{
-	    window.location.assign("http://localhost:8080/LifeCorpTM/Products")
+	    window.location.assign("http://localhost:8080/LifeCorpTM/ProductsforExisting")
 	}
 	
 </script>
 </head>
 <body>
+<form action="ProductsforExisting" method="post">
 	 <div class="form-group">
 		     <label for="exampleInputEmail">Email address</label>
-    			<input type="email" class="form-control" id="email" placeholder="email">
+    			<input type="email" class="form-control" id="email" placeholder="email" name="emailid">
 		  </div>
 		  <div class="form-group">
     		<label for="password">Password</label>
-    			<input type="password" class="form-control" id="password" placeholder="password">
+    			<input type="password" class="form-control" id="password" placeholder="password" name="password">
   		  </div>
   		  <div class="checkbox">
 		    <label>
@@ -43,6 +44,6 @@
 		  </div>
 		    </div>
 		  <button type="submit" class="btn btn-default"  onclick="login()">Submit</button>
-		</form>		 	
+</form>		 	
 </body>
 </html>

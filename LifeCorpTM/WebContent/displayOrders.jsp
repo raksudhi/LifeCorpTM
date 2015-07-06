@@ -16,11 +16,17 @@
 	
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-
+	
+	<script>
+	function login() 
+	{
+	    window.location.assign("http://localhost:8080/LifeCorpTM/OrderHistory")
+	}
+	
+</script>
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
+	
 <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -29,11 +35,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Order Information</a>
+          <a class="navbar-brand" href="#">Customer Display Application</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="displayProducts.jsp">Back</a></li>
+            <li class="active"><a href="index.html">Home</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -42,26 +48,16 @@
 <br />
 <br />
 
- 	
-	
-	<c:out value="${UserInfo.firstname}"></c:out>
-	<c:out value="${UserInfo.lastname}"></c:out>
-	 <br>
-	
-	
-	<c:forEach var="prod" items="${ProductInfo}">
+   <div class="container">
+	    <div class="jumbotron">
+		  <h1>Order Confirmation</h1>
+		<p> <a class="btn btn-primary btn-lg" href="orderConfirmation.jsp" role="button" >Proceed</a></p> 
+		</div>	
+	    <table class="table table-hover">
+			${tableInfo}
+		</table>
 		
-		Product Name: ${prod.product}
-		<br>
-		Product Price: ${prod.listPrice}
-	</c:forEach>
-	<br>
-	<form action="DispatchUserID" method="post">
-	<div class="form-group">
-		     <label for="Quantity">Quantity</label>
-    			<input type="text" class="form-control" id="quantity" placeholder="quantity" name="quantity">
-	</div>
-	<button type="submit" class="btn btn-default"  onclick="login()">Submit</button>	
-	</form>	
+    </div><!-- /.container -->
+    <button type="submit" class="btn btn-default"  onclick="login()">Order History</button>	
 </body>
 </html>

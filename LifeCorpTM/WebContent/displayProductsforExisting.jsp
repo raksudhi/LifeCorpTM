@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Welcome to Life Corporation TM - Online Market</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	
 	<!-- Optional theme -->
@@ -16,8 +16,6 @@
 	
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -29,11 +27,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Order Information</a>
+          <a class="navbar-brand" href="#">Product List</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="displayProducts.jsp">Back</a></li>
+            <li class="active"><a href="index.html">Home</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -42,26 +40,29 @@
 <br />
 <br />
 
- 	
-	
-	<c:out value="${UserInfo.firstname}"></c:out>
-	<c:out value="${UserInfo.lastname}"></c:out>
-	 <br>
-	
-	
-	<c:forEach var="prod" items="${ProductInfo}">
+<div class="container">
+<div class="starter-template">
+        <h1>LifeCorp Products</h1>
+     <!-- <p class="lead">Display All Customers:</p> -->   
+</div>
+
+	<table class="table table-striped"> 
 		
-		Product Name: ${prod.product}
-		<br>
-		Product Price: ${prod.listPrice}
+		 	<tr >
+				<th>Products</th>
+				<th>List Price</th>
+				<th>&nbsp;</th>
+			</tr>
+
+	 <c:forEach var="prod" items="${ProductList}">
+	<tr>
+		<td>${prod.product}</td>
+		<td>${prod.listPrice}</td>
+		<td><a href="ExistinguserValidation?prodID=${prod.productId}">select</a></td>
+	</tr>
 	</c:forEach>
-	<br>
-	<form action="DispatchUserID" method="post">
-	<div class="form-group">
-		     <label for="Quantity">Quantity</label>
-    			<input type="text" class="form-control" id="quantity" placeholder="quantity" name="quantity">
-	</div>
-	<button type="submit" class="btn btn-default"  onclick="login()">Submit</button>	
-	</form>	
+</table> 
+
+<!-- /.container -->
 </body>
 </html>
